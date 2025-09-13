@@ -37,6 +37,7 @@
 *.out
 *.app
 btc
+RPN
 
 # debug information files
 *.dwo
