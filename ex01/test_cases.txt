@@ -1,0 +1,114 @@
+# RPN Calculator Test Cases
+# Format: INPUT_EXPRESSION | EXPECTED_OUTPUT | DESCRIPTION
+# Expected output: "OK:number" for success, "ERROR" for any error case
+
+# Basic arithmetic operations
+3 4 + | OK:7 | Simple addition
+5 2 - | OK:3 | Simple subtraction  
+6 7 * | OK:42 | Simple multiplication
+8 2 / | OK:4 | Simple division
+
+# Subject examples (must match exactly)
+8 9 * 9 - 9 - 9 - 4 - 1 + | OK:42 | Complex expression from subject
+7 7 * 7 - | OK:42 | Second example from subject
+1 2 * 2 / 2 * 2 4 - + | OK:0 | Third example from subject
+
+# Single operand cases
+5 | OK:5 | Single number (valid RPN)
+0 | OK:0 | Single zero
+
+# Zero operations
+0 5 + | OK:5 | Add zero
+5 0 - | OK:5 | Subtract zero
+0 5 * | OK:0 | Multiply by zero
+5 0 * | OK:0 | Multiply zero
+
+# Negative results
+3 5 - | OK:-2 | Subtraction resulting in negative
+0 1 - | OK:-1 | Zero minus one
+
+# Larger numbers from operations
+9 9 * | OK:81 | Two digit result
+9 9 * 9 + | OK:90 | Ninety
+1 2 + 3 + 4 + | OK:10 | Chain addition
+
+# Format validation errors - invalid characters
+(1 + 1) | ERROR | Parentheses not allowed
+3 a + | ERROR | Invalid character 'a'
+3 4 & | ERROR | Invalid operator '&'
+3.5 4 + | ERROR | Decimal point not allowed
+3,4 + | ERROR | Comma not allowed
+
+# Format validation errors - multi-digit numbers
+10 5 + | ERROR | Multi-digit number '10'
+12 3 + | ERROR | Multi-digit number '12'
+3 45 + | ERROR | Multi-digit number '45'
+
+# Format validation errors - negative number tokens
+-3 4 + | ERROR | Negative number token
+3 -4 + | ERROR | Negative number token
+-1 | ERROR | Single negative number
+
+# Format validation errors - spacing issues
+3 4  + | ERROR | Double space
+ 3 4 + | ERROR | Leading space
+3 4 + | ERROR | Trailing space
+3  4 + | ERROR | Double space in middle
+	3 4 + | ERROR | Tab character instead of space
+
+# Runtime errors - insufficient operands
++ | ERROR | No operands for addition
+3 + | ERROR | Only one operand for addition
+- | ERROR | No operands for subtraction
+3 - | ERROR | Only one operand for subtraction
+* | ERROR | No operands for multiplication
+3 * | ERROR | Only one operand for multiplication
+/ | ERROR | No operands for division
+3 / | ERROR | Only one operand for division
+
+# Runtime errors - too many operands
+3 4 | ERROR | Two numbers, no operator
+3 4 5 + | ERROR | Extra operand remaining
+1 2 3 4 + + | ERROR | Extra operand remaining
+5 6 7 8 9 | ERROR | All numbers, no operators
+
+# Division by zero
+3 0 / | ERROR | Division by zero
+0 0 / | ERROR | Zero divided by zero
+5 2 - 2 - 0 / | ERROR | Expression resulting in division by zero
+
+# Empty and whitespace cases
+ | ERROR | Empty string
+   | ERROR | Only spaces
+
+# Complex valid expressions
+1 2 + 3 4 + * | OK:21 | (1+2) * (3+4) = 3 * 7 = 21
+5 1 2 + 4 * + 3 - | OK:14 | 5 + (1+2)*4 - 3 = 5 + 12 - 3 = 14
+9 5 1 - / | OK:2 | 9 / (5-1) = 9/4 = 2 (integer division)
+2 3 + 4 5 + * | OK:45 | (2+3) * (4+5) = 5 * 9 = 45
+
+# Edge cases with order of operations
+1 2 3 + * | OK:5 | 1 * (2+3) = 1 * 5 = 5
+1 2 + 3 * | OK:9 | (1+2) * 3 = 3 * 3 = 9
+6 2 / 3 + | OK:6 | 6/2 + 3 = 3 + 3 = 6
+6 2 3 + / | OK:1 | 6 / (2+3) = 6/5 = 1 (integer division)
+
+# Maximum single digits
+9 9 + | OK:18 | Maximum single digit addition
+9 9 * | OK:81 | Maximum single digit multiplication
+9 1 - | OK:8 | Nine minus one
+9 9 / | OK:1 | Nine divided by nine
+
+# Minimum operations
+0 0 + | OK:0 | Zero plus zero
+1 1 - | OK:0 | One minus one
+0 1 * | OK:0 | Zero times one
+0 1 + | OK:1 | Zero plus one
+
+# Long expressions
+1 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + | OK:9 | Chain of additions
+2 2 * 2 * 2 * | OK:16 | Chain of multiplications: ((2*2)*2)*2 = 16
+9 1 - 1 - 1 - 1 - 1 - 1 - 1 - 1 - | OK:1 | Chain of subtractions
+
+# Potential overflow cases (these should be handled gracefully)
+9 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * 9 * | ERROR | Massive multiplication leading to overflow
