@@ -1,0 +1,84 @@
+# PmergeMe Test Cases
+# Format: EXPECTED_EXIT_CODE|TEST_DESCRIPTION|ARGUMENTS
+# Exit code 0 = success, 1 = error expected
+
+# Basic functionality tests
+0|Single element|42
+0|Two elements ascending|1 2
+0|Two elements descending|2 1
+0|Three elements|3 1 2
+0|Simple example from subject|3 5 9 7 4
+0|Five elements reverse sorted|5 4 3 2 1
+0|Already sorted sequence|1 2 3 4 5 6 7 8 9 10
+0|Reverse sorted sequence|10 9 8 7 6 5 4 3 2 1
+0|Random sequence|8 3 1 9 2 7 5 4 6
+
+# Duplicate handling
+0|All same elements|5 5 5 5 5
+0|Some duplicates|3 1 4 1 5 9 2 6 5 3
+0|Pairs of duplicates|1 1 2 2 3 3 4 4
+0|Mixed with duplicates|5 3 5 1 3 7 1 9 5
+
+# Edge cases - valid inputs
+0|Maximum INT value|2147483647
+0|Large numbers|2147483647 1000000 500000 2000000
+0|Leading plus signs|+123 +456 +789
+0|Mixed plus signs valid|123 +456 789 +12
+1|Mixed plus signs with leading zero|123 +456 789 +012
+0|Single digit|1
+0|Large sequence 20 elements|20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+
+# Performance tests (larger datasets)
+0|Medium dataset 50 elements|50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+0|Even number of elements|2 4 6 8 10 12 14 16 18 20
+0|Odd number of elements|1 3 5 7 9 11 13 15 17 19 21
+
+# Error cases - invalid inputs
+1|No arguments|
+1|Zero value|0 5 3
+1|Negative number|-1 5 3
+1|Multiple negative numbers|-5 -3 -1
+1|Overflow INT_MAX + 1|2147483648
+1|Large overflow|9999999999999999999
+1|Non-digit characters|12a 34
+1|Letters only|abc def
+1|Mixed valid and invalid|123 abc 456
+1|Bare plus sign|+ 123
+1|Bare minus sign|- 123
+1|Empty string in args|123 "" 456
+1|Special characters|123 @#$ 456
+1|Floating point|123.45 678
+1|Scientific notation|1e5 2e3
+1|Hexadecimal|0x123 0xFF
+1|Octal|0123 0456
+1|Leading zeros with letters|0123abc
+1|Multiple plus signs|++123 456
+1|Multiple minus signs|--123 456
+1|Plus and minus|+-123 456
+1|Whitespace only|   
+1|Tab character|TAB_TEST_CASE
+1|Newline in argument|123\n456
+
+# Boundary tests
+0|Minimum positive|1
+0|Small numbers|1 2 3
+0|Powers of 2|1 2 4 8 16 32 64 128 256 512 1024
+0|Fibonacci-like|1 1 2 3 5 8 13 21 34 55
+0|Large valid number close to INT_MAX|2147483646 2147483645 2147483644
+
+# Stress tests with valid large sequences
+0|100 descending|100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76 75 74 73 72 71 70 69 68 67 66 65 64 63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+
+# Additional edge cases
+1|Leading zero that makes invalid number|01 02 03
+1|Very long invalid number|12345678901234567890123456789
+1|Negative zero|-0
+1|Plus zero|+0
+1|Just zero|0
+
+# Sorting verification test cases
+0|Sorted check - reverse|5 4 3 2 1
+0|Sorted check - duplicates with order|3 1 4 1 5 9 2 6 5 3 5
+0|Sorted check - large range|1000 1 500 250 750 100 900 50
+0|Sorted check - negative pattern simulation|10 1 9 2 8 3 7 4 6 5
+0|Sorted check - pyramid|1 3 5 7 9 8 6 4 2
