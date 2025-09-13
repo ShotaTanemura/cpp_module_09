@@ -16,34 +16,44 @@ RPN& RPN::operator=(const RPN& other) {
 }
 
 bool RPN::evaluate(const std::string& expr, long& out) {
-    std::vector<std::string> tokens;
-    
-    // Step 1: Validate format and tokenize
-    if (!tokenizeAndValidate(expr, tokens)) {
+    // Step 1: Validate format
+    if (!tokenizeAndValidate(expr)) {
         return false;
     }
     
-    // Step 2: Evaluate using stack
+    // Step 2: Evaluate using stack, processing tokens on-the-fly
     std::stack<long> st;
     
-    for (size_t i = 0; i < tokens.size(); ++i) {
-        const std::string& token = tokens[i];
-        
-        if (token.length() == 1 && token[0] >= '0' && token[0] <= '9') {
-            // Single digit number
-            long value = token[0] - '0';
-            st.push(value);
-        }
-        else if (token.length() == 1 && 
-                (token[0] == '+' || token[0] == '-' || token[0] == '*' || token[0] == '/')) {
-            // Operator
-            if (!applyOp(st, token[0])) {
-                return false;
+    if (expr.empty()) {
+        return false;
+    }
+    
+    // Parse tokens by splitting on single spaces
+    size_t start = 0;
+    for (size_t i = 0; i <= expr.length(); ++i) {
+        if (i == expr.length() || expr[i] == ' ') {
+            if (start < i) {
+                std::string token = expr.substr(start, i - start);
+                
+                if (token.length() == 1 && token[0] >= '0' && token[0] <= '9') {
+                    // Single digit number
+                    long value = token[0] - '0';
+                    st.push(value);
+                }
+                else if (token.length() == 1 && 
+                        (token[0] == '+' || token[0] == '-' || token[0] == '*' || token[0] == '/')) {
+                    // Operator
+                    if (!applyOp(st, token[0])) {
+                        return false;
+                    }
+                }
+                else {
+                    // Invalid token
+                    return false;
+                }
+                
+                start = i + 1;
             }
-        }
-        else {
-            // Invalid token (should not happen after validation)
-            return false;
         }
     }
     
@@ -56,9 +66,7 @@ bool RPN::evaluate(const std::string& expr, long& out) {
     return true;
 }
 
-bool RPN::tokenizeAndValidate(const std::string& expr, std::vector<std::string>& tokens) {
-    tokens.clear();
-    
+bool RPN::tokenizeAndValidate(const std::string& expr) {
     if (expr.empty()) {
         return false;
     }
@@ -67,6 +75,8 @@ bool RPN::tokenizeAndValidate(const std::string& expr, std::vector<std::string>&
     if (expr[0] == ' ' || expr[expr.length() - 1] == ' ') {
         return false;
     }
+    
+    bool hasTokens = false;
     
     // Parse tokens by splitting on single spaces
     size_t start = 0;
@@ -85,7 +95,7 @@ bool RPN::tokenizeAndValidate(const std::string& expr, std::vector<std::string>&
                     return false;
                 }
                 
-                tokens.push_back(token);
+                hasTokens = true;
                 start = i + 1;
             }
             else {
@@ -95,7 +105,7 @@ bool RPN::tokenizeAndValidate(const std::string& expr, std::vector<std::string>&
         }
     }
     
-    return !tokens.empty();
+    return hasTokens;
 }
 
 bool RPN::applyOp(std::stack<long>& st, char op) {
