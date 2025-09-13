@@ -38,6 +38,7 @@
 *.app
 btc
 RPN
+PmergeMe
 
 # debug information files
 *.dwo
