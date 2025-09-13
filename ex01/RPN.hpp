@@ -2,12 +2,11 @@
 #define RPN_HPP
 
 #include <string>
-#include <vector>
 #include <stack>
 
 class RPN {
 private:
-    bool tokenizeAndValidate(const std::string& expr, std::vector<std::string>& tokens);
+    bool tokenizeAndValidate(const std::string& expr);
     bool applyOp(std::stack<long>& st, char op);
     bool safeAdd(long a, long b, long& result);
     bool safeSub(long a, long b, long& result);
